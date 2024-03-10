@@ -1,23 +1,25 @@
-const express = require('express');
+const express = require("express");
 const server = express();
-const mongoose = require('mongoose');
-const { createProduct } = require('./controller/Product');
+const mongoose = require("mongoose");
+const { createProduct } = require("./controller/Product");
+const productRouters = require("./routes/Products");
 
 //middlewares
-server.use(express.json());// to parse req.body  
+server.use(express.json()); // to parse req.body
+server.use('/products',productRouters.router);
 
-main().catch(error=>console.log(error))
+main().catch((error) => console.log(error));
 
-async function main(){
-    await mongoose.connect('mongodb://127.0.0.1:27017/ecommerce');
-    console.log('database connected')
+async function main() {
+  await mongoose.connect("mongodb://127.0.0.1:27017/ecommerce");
+  console.log("database connected");
 }
 
-server.get('/',(req,res)=>{
-res.json({status:'runnig'})
-})
-server.post('/products',createProduct);
+server.get("/", (req, res) => {
+  res.json({ status: "runnig" });
+});
+server.post("/products", createProduct);
 
- server.listen(8080,()=>{
-    console.log('app started')
-})
+server.listen(8080, () => {
+  console.log("app started");
+});
