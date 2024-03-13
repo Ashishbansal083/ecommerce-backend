@@ -2,11 +2,15 @@ const express = require("express");
 const server = express();
 const mongoose = require("mongoose");
 const { createProduct } = require("./controller/Product");
-const productRouters = require("./routes/Products");
+const productsRouter = require("./routes/Products");
+const brandsRouter = require('./routes/Brands')
+const categoriesRouter = require('./routes/Categories')
 
 //middlewares
 server.use(express.json()); // to parse req.body
-server.use('/products',productRouters.router);
+server.use('/products',productsRouter.router);
+server.use('/brands',brandsRouter.router);
+server.use('/categories',categoriesRouter.router);
 
 main().catch((error) => console.log(error));
 
@@ -18,7 +22,7 @@ async function main() {
 server.get("/", (req, res) => {
   res.json({ status: "runnig" });
 });
-server.post("/products", createProduct);
+server.post("/products", createProduct); 
 
 server.listen(8080, () => {
   console.log("app started");
