@@ -5,8 +5,10 @@ const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const brandsRouter = require('./routes/Brands')
 const categoriesRouter = require('./routes/Categories')
+const cors = require("cors")
 
 //middlewares
+server.use(cors())
 server.use(express.json()); // to parse req.body
 server.use('/products',productsRouter.router);
 server.use('/brands',brandsRouter.router);
