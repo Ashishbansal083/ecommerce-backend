@@ -19,7 +19,7 @@ exports.fetchAllProducts = async (req, res) => {
 
   }
   if(req.query.brand){
-    query =  query.sort({brand:req.query.brand});
+    query =  query.find({brand:req.query.brand});
     totalProductsQuery = totalProductsQuery.find({brand:req.query.brand});
 
   }
