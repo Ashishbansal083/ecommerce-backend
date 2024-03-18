@@ -13,6 +13,8 @@ server.use(express.json()); // to parse req.body
 server.use('/products',productsRouter.router);
 server.use('/brands',brandsRouter.router);
 server.use('/categories',categoriesRouter.router);
+// Set the headers to be exposed
+
 
 main().catch((error) => console.log(error));
 
