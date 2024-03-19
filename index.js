@@ -5,6 +5,8 @@ const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const brandsRouter = require('./routes/Brands')
 const categoriesRouter = require('./routes/Categories')
+const authRouter = require('./routes/Auth')
+const userRouter = require('./routes/User')
 const cors = require("cors")
 
 //middlewares
@@ -13,6 +15,8 @@ server.use(express.json()); // to parse req.body
 server.use('/products',productsRouter.router);
 server.use('/brands',brandsRouter.router);
 server.use('/categories',categoriesRouter.router);
+server.use('/users',userRouter.router);
+server.use('/auth',authRouter.router);
 // Set the headers to be exposed
 
 

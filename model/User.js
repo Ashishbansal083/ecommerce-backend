@@ -3,13 +3,14 @@ const express = require('express');
 
 const {Schema} = mongoose;
 
+
 const userSchema = new Schema({
     email : {type: String,required:true,unique:true},
     password : {type: String,required:true},
-    role : {type: String,required:true},
-    addresses : {type: [Mixed]},
+    role : {type: String,required:true,default:'user'},
+    addresses : {type: [{any: mongoose.Mixed} ]},
     name : {type:String },
-    orders : {type: [Mixed]},
+    orders : {type: [{any: mongoose.Mixed} ]},
 })
 const virtual = userSchema.virtual('id');
 virtual.get(function(){
