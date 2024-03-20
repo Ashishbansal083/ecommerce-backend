@@ -7,6 +7,7 @@ const brandsRouter = require('./routes/Brands')
 const categoriesRouter = require('./routes/Categories')
 const authRouter = require('./routes/Auth')
 const userRouter = require('./routes/User')
+const cartRouter = require('./routes/Cart')
 const cors = require("cors")
 
 //middlewares
@@ -17,6 +18,7 @@ server.use('/brands',brandsRouter.router);
 server.use('/categories',categoriesRouter.router);
 server.use('/users',userRouter.router);
 server.use('/auth',authRouter.router);
+server.use('/cart',cartRouter.router);
 // Set the headers to be exposed
 
 

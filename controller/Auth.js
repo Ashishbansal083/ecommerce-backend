@@ -22,7 +22,11 @@ exports.loginUser = async (req,res) => {
         email: user.email,
         addresses: user.addresses,
       });
-    }    
+    } 
+    else  {
+      res.status(401).json({massage: "invailid cradential"
+        });
+    } 
   } catch (err) {
     res.status(400).json(err);
   }
