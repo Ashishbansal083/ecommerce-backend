@@ -24,22 +24,21 @@ exports.fetchCartByUser = async (req, res) => {
   }
 };
 exports.deleteFromCart = async (req, res) => {
-  const {id} = req.params;  
-  try{
+  const { id } = req.params;
+  try {
     const doc = await Cart.findByIdAndDelete(id);
     res.status(200).json(doc);
-  }catch(err){
+  } catch (err) {
     res.status(400).json(err);
   }
 };
 exports.updateCart = async (req, res) => {
-  const {id} = req.params;
-  
-  try{
-    const cart = await Cart.findByIdAndUpdate(id,req.body,{new:true});
+  const { id } = req.params;
+
+  try {
+    const cart = await Cart.findByIdAndUpdate(id, req.body, { new: true });
     res.status(200).json(cart);
-  }catch(err){
+  } catch (err) {
     res.status(400).json(err);
   }
 };
-
