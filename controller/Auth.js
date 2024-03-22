@@ -24,7 +24,7 @@ exports.loginUser = async (req,res) => {
       });
     } 
     else  {
-      res.status(401).json({massage: "invailid cradential"
+      res.status(401).json({massage: "invailid cradantial"
         });
     } 
   } catch (err) {

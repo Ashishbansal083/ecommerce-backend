@@ -11,8 +11,7 @@ exports.createOrder = async (req, res) => {
 };
 
 exports.fetchOrderByUser = async (req, res) => {
-  const { user } = req.query;
-
+  const {user} = req.query;
   try {
     const orders = await Order.find({ user: user })           
     res.status(200).json(orders);
@@ -21,7 +20,7 @@ exports.fetchOrderByUser = async (req, res) => {
   }
 };
 exports.deleteOrder = async (req, res) => {
-  const { id } = req.params;
+  const {id} = req.params;
   try {
     const doc = await Order.findByIdAndDelete(id);
     res.status(200).json(doc);
