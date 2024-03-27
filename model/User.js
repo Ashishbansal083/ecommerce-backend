@@ -8,9 +8,9 @@ const userSchema = new Schema({
     email : {type: String,required:true,unique:true},
     password : {type: String,required:true},
     role : {type: String,required:true,default:'user'},
-    addresses : {type: [{any: mongoose.Mixed} ]},
+    addresses : {type: [Schema.Types.Mixed]},
     name : {type:String },
-    orders : {type: [{any: mongoose.Mixed} ]},
+    orders : {type: [Schema.Types.Mixed] },
 })
 const virtual = userSchema.virtual('id');
 virtual.get(function(){
