@@ -12,13 +12,14 @@ const orderRouter = require("./routes/Order");
 const cors = require("cors");
 const session = require("express-session");
 const passport = require("passport");
+const LocalStrategy = require("passport-local").Strategy;
+const User = require("./model/User");
 
 server.use(
   session({
     secret: "keyboard cat",
     resave: false, // don't save session if unmodified
     saveUninitialized: false, // don't create session until something stored
-    store: new SQLiteStore({ db: "sessions.db", dir: "./var/db" }),
   })
 );
 server.use(passport.authenticate("session"));
@@ -43,11 +44,8 @@ passport.use(
       const user = await User.findOne({ email: username });
       if (!user) {
         done(null, false, { massage: "no such user exist" });
-      } else if (user.password === req.body.password) {
-        done({
-          id: user.id,
-          role: user.role,
-        });
+      } else if (user.password === password) {
+        done(null, user);
       } else {
         done({ massage: "invailid cradantial" });
       }
@@ -60,11 +58,7 @@ passport.use(
 
 passport.serializeUser(function (user, cb) {
   process.nextTick(function () {
-    return cb(null, {
-      id: user.id,
-      username: user.username,
-      picture: user.picture,
-    });
+    return cb(null, {id:user.id,role:user.role});
   });
 });
 

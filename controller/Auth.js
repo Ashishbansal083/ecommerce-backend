@@ -11,21 +11,5 @@ exports.createUser = async (req, res) => {
 };
 
 exports.loginUser = async (req,res) => {
-  try {
-    const user = await User.findOne({ email: req.body.email });
-    if (!user) {
-      res.status(401).json({ massage: "no such user exist" });
-    } else if (user.password === req.body.password) {
-      res.status(201).json({
-        id: user.id,
-        role:user.role
-      });
-    } 
-    else  {
-      res.status(401).json({massage: "invailid cradantial"
-        });
-    } 
-  } catch (err) {
-    res.status(400).json(err);
-  }
+  res.json({status:'success'})
 };
