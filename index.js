@@ -27,7 +27,7 @@ server.use(passport.authenticate("session"));
 //middlewares
 server.use(cors());
 server.use(express.json()); // to parse req.body
-server.use("/products", productsRouter.router);
+server.use("/products",isAuth, productsRouter.router);// we can also use jwt token
 server.use("/brands", brandsRouter.router);
 server.use("/categories", categoriesRouter.router);
 server.use("/users", userRouter.router);
@@ -78,6 +78,15 @@ async function main() {
 server.get("/", (req, res) => {
   res.json({ status: "runnig" });
 });
+
+function isAuth(req,res,done){
+  if(req.user){
+    done()
+  }else{
+    res.send(401)
+  }
+
+}
 server.post("/products", createProduct);
 
 server.listen(8080, () => {
