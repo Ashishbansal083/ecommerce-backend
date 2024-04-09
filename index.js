@@ -14,6 +14,9 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("./model/User");
+const crypto = require('crypto');
+const { isAuth, sanitizeUser } = require("./services/common");
+
 
 server.use(
   session({
@@ -27,7 +30,7 @@ server.use(passport.authenticate("session"));
 //middlewares
 server.use(cors());
 server.use(express.json()); // to parse req.body
-server.use("/products",isAuth, productsRouter.router);// we can also use jwt token
+server.use("/products", isAuth, productsRouter.router); // we can also use jwt token
 server.use("/brands", brandsRouter.router);
 server.use("/categories", categoriesRouter.router);
 server.use("/users", userRouter.router);
@@ -44,11 +47,20 @@ passport.use(
       const user = await User.findOne({ email: username });
       if (!user) {
         done(null, false, { massage: "no such user exist" });
-      } else if (user.password === password) {
-        done(null, user);
-      } else {
-        done({ massage: "invailid cradantial" });
       }
+      crypto.pbkdf2(
+        password,
+        user.salt,
+        31000,
+        32,
+        "sha256",
+        async function (err, hashedPassword) {
+          if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
+            return done({ massage: "invailid cradantial" });
+          }
+          done(null, sanitizeUser(user));
+        }
+      );
     } catch (err) {
       done(err);
     }
@@ -58,7 +70,7 @@ passport.use(
 
 passport.serializeUser(function (user, cb) {
   process.nextTick(function () {
-    return cb(null, {id:user.id,role:user.role});
+    return cb(null, { id: user.id, role: user.role });
   });
 });
 
@@ -75,18 +87,9 @@ async function main() {
   console.log("database connected");
 }
 
-server.get("/", (req, res) => {
-  res.json({ status: "runnig" });
-});
 
-function isAuth(req,res,done){
-  if(req.user){
-    done()
-  }else{
-    res.send(401)
-  }
 
-}
+
 server.post("/products", createProduct);
 
 server.listen(8080, () => {
