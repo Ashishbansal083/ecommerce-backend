@@ -3,7 +3,7 @@ const crypto = require('crypto');
 
 exports.createUser = async (req, res) => {
   try {
-    const salt = crypto.rendomBytes(16);
+    const salt = crypto.randomBytes(16);
     crypto.pbkdf2(
       req.body.password,
       salt,
@@ -11,7 +11,7 @@ exports.createUser = async (req, res) => {
       32,
       "sha256",
       async function (err, hashedPassword) {
-        const user = new User({ ...req.body, password: hashedPassword });
+        const user = new User({...req.body, password: hashedPassword ,salt});
         const doc = await user.save();
         res.status(201).json({ id: doc.id, role: doc.role });
       }
