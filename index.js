@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const brandsRouter = require("./routes/Brands");
+const jwt = require('jsonwebtoken');
 const categoriesRouter = require("./routes/Categories");
 const authRouter = require("./routes/Auth");
 const userRouter = require("./routes/User");
@@ -14,8 +15,13 @@ const session = require("express-session");
 const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("./model/User");
-const crypto = require('crypto');
+const crypto = require("crypto");
 const { isAuth, sanitizeUser } = require("./services/common");
+const JwtStrategy = require("passport-jwt").Strategy;
+const ExtractJwt = require("passport-jwt").ExtractJwt;
+
+
+const secret_key = 'secret_key'
 
 
 server.use(
@@ -25,6 +31,12 @@ server.use(
     saveUninitialized: false, // don't create session until something stored
   })
 );
+
+//JWT options
+var opts = {}
+opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.secretOrKey = secret_key;
+
 server.use(passport.authenticate("session"));
 
 //middlewares
@@ -41,8 +53,10 @@ server.use("/orders", orderRouter.router);
 
 //passport startagies
 
+
+
 passport.use(
-  new LocalStrategy(async function (username, password, done) {
+  new LocalStrategy('local',async function (username, password, done) {
     try {
       const user = await User.findOne({ email: username });
       if (!user) {
@@ -58,7 +72,8 @@ passport.use(
           if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
             return done({ massage: "invailid cradantial" });
           }
-          done(null, sanitizeUser(user));
+          const token = jwt.sign(sanitizeUser(user), secret_key);
+          done(null,token );
         }
       );
     } catch (err) {
@@ -66,6 +81,20 @@ passport.use(
     }
   })
 );
+
+passport.use('JWT',new JwtStrategy(opts, function(jwt_payload, done) {
+  User.findOne({id: jwt_payload.sub}, function(err, user) {
+      if (err) {
+          return done(err, false);
+      }
+      if (user) {
+          return done(null, user);
+      } else {
+          return done(null, false);
+          // or you could create a new account
+      }
+  });
+}));
 //this creates session vaiables
 
 passport.serializeUser(function (user, cb) {
@@ -86,9 +115,6 @@ async function main() {
   await mongoose.connect("mongodb://127.0.0.1:27017/ecommerce");
   console.log("database connected");
 }
-
-
-
 
 server.post("/products", createProduct);
 
