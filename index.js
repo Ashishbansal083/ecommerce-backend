@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const brandsRouter = require("./routes/Brands");
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 const categoriesRouter = require("./routes/Categories");
 const authRouter = require("./routes/Auth");
 const userRouter = require("./routes/User");
@@ -20,9 +20,7 @@ const { isAuth, sanitizeUser } = require("./services/common");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 
-
-const secret_key = 'secret_key'
-
+const secret_key = "secret_key";
 
 server.use(
   session({
@@ -33,7 +31,7 @@ server.use(
 );
 
 //JWT options
-var opts = {}
+var opts = {};
 opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
 opts.secretOrKey = secret_key;
 
@@ -53,10 +51,8 @@ server.use("/orders", orderRouter.router);
 
 //passport startagies
 
-
-
 passport.use(
-  new LocalStrategy('local',async function (username, password, done) {
+  new LocalStrategy("local", async function (username, password, done) {
     try {
       const user = await User.findOne({ email: username });
       if (!user) {
@@ -73,7 +69,7 @@ passport.use(
             return done({ massage: "invailid cradantial" });
           }
           const token = jwt.sign(sanitizeUser(user), secret_key);
-          done(null,token );
+          done(null, token);
         }
       );
     } catch (err) {
@@ -82,19 +78,22 @@ passport.use(
   })
 );
 
-passport.use('JWT',new JwtStrategy(opts, function(jwt_payload, done) {
-  User.findOne({id: jwt_payload.sub}, function(err, user) {
-      if (err) {
-          return done(err, false);
-      }
+passport.use(
+  "JWT",
+  new JwtStrategy(opts, async function (jwt_payload, done) {
+    try {
+      const user = await User.findOne({ id: jwt_payload.sub });
       if (user) {
-          return done(null, user);
+        return done(null, user);
       } else {
-          return done(null, false);
-          // or you could create a new account
+        return done(null, false);
+        // or you could create a new account
       }
-  });
-}));
+    } catch (err) {
+      return done(err, false);
+    }
+  })
+);
 //this creates session vaiables
 
 passport.serializeUser(function (user, cb) {
