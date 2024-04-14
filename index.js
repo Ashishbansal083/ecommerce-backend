@@ -40,7 +40,7 @@ server.use(passport.authenticate("session"));
 //middlewares
 server.use(cors());
 server.use(express.json()); // to parse req.body
-server.use("/products", isAuth, productsRouter.router); // we can also use jwt token
+server.use("/products", isAuth(), productsRouter.router); // we can also use jwt token
 server.use("/brands", brandsRouter.router);
 server.use("/categories", categoriesRouter.router);
 server.use("/users", userRouter.router);
@@ -52,9 +52,13 @@ server.use("/orders", orderRouter.router);
 //passport startagies
 
 passport.use(
-  new LocalStrategy("local", async function (username, password, done) {
+  new LocalStrategy("local", { usernameField: "email" }, async function (
+    email,
+    password,
+    done
+  ) {
     try {
-      const user = await User.findOne({ email: username });
+      const user = await User.findOne({ email: email });
       if (!user) {
         done(null, false, { massage: "no such user exist" });
       }

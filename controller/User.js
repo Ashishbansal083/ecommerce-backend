@@ -1,10 +1,12 @@
 const User = require('../model/User')
 
 exports.fetchUserById = async (req, res) => {
-  const {id} = req.params;
+  const {id} = req.user;
   
   try{
     const user = await User.findById(id,'name email id addresses')    
+    delete user.password;
+    delete user.salt;
     res.status(200).json(user);
   }catch(err){
     res.status(400).json(err);
