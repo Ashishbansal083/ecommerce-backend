@@ -52,7 +52,7 @@ server.use("/orders", orderRouter.router);
 //passport startagies
 
 passport.use(
-  new LocalStrategy("local", { usernameField: "email" }, async function (
+  new LocalStrategy({ usernameField: "email" }, async function (
     email,
     password,
     done
@@ -73,7 +73,7 @@ passport.use(
             return done({ massage: "invailid cradantial" });
           }
           const token = jwt.sign(sanitizeUser(user), secret_key);
-          done(null, token);
+          done(null, {token});
         }
       );
     } catch (err) {
