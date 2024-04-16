@@ -5,6 +5,7 @@ const { createProduct } = require("./controller/Product");
 const productsRouter = require("./routes/Products");
 const brandsRouter = require("./routes/Brands");
 const jwt = require("jsonwebtoken");
+const cookieParser = require('cookie-parser');
 const categoriesRouter = require("./routes/Categories");
 const authRouter = require("./routes/Auth");
 const userRouter = require("./routes/User");
@@ -16,12 +17,13 @@ const passport = require("passport");
 const LocalStrategy = require("passport-local").Strategy;
 const User = require("./model/User");
 const crypto = require("crypto");
-const { isAuth, sanitizeUser } = require("./services/common");
+const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
 
 const secret_key = "secret_key";
-
+server.use(express.static('build'))
+server.use(cookieParser());
 server.use(
   session({
     secret: "keyboard cat",
@@ -32,7 +34,7 @@ server.use(
 
 //JWT options
 var opts = {};
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+opts.jwtFromRequest = cookieExtractor;
 opts.secretOrKey = secret_key;
 
 server.use(passport.authenticate("session"));
@@ -83,7 +85,7 @@ passport.use(
 );
 
 passport.use(
-  "JWT",
+  'jwt',
   new JwtStrategy(opts, async function (jwt_payload, done) {
     try {
       const user = await User.findOne({ id: jwt_payload.sub });
