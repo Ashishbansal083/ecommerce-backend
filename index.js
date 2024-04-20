@@ -54,6 +54,7 @@ server.use("/orders", orderRouter.router);
 //passport startagies
 
 passport.use(
+  'local',
   new LocalStrategy({ usernameField: "email" }, async function (
     email,
     password,
@@ -61,6 +62,7 @@ passport.use(
   ) {
     try {
       const user = await User.findOne({ email: email });
+      console.log(email, password, user);
       if (!user) {
         done(null, false, { massage: "no such user exist" });
       }
@@ -72,10 +74,10 @@ passport.use(
         "sha256",
         async function (err, hashedPassword) {
           if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
-            return done({ massage: "invailid cradantial" });
+            return done(null, false,{ massage: "invailid cradantial" });
           }
           const token = jwt.sign(sanitizeUser(user), secret_key);
-          done(null, {token});
+          done(null, { id: user.id, role: user.role, token });
         }
       );
     } catch (err) {
