@@ -40,13 +40,14 @@ exports.createUser = async (req, res) => {
 };
 
 exports.loginUser = async (req, res) => {
+  const user = req.user;
   res
-    .cookie('jwt', req.user.token, {
+    .cookie('jwt', user.token, {
       expires: new Date(Date.now() + 3600000),
       httpOnly: true,
     })
     .status(201)
-    .json(req.user.token);
+    .json({ id: user.id, role: user.role });
 };
 exports.checkUser = async (req, res) => {
   res.json({ status: 'success', user: req.user });
