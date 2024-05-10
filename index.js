@@ -20,6 +20,8 @@ const crypto = require("crypto");
 const { isAuth, sanitizeUser, cookieExtractor } = require("./services/common");
 const JwtStrategy = require("passport-jwt").Strategy;
 const ExtractJwt = require("passport-jwt").ExtractJwt;
+const path = require("path");
+
 
 const secret_key = "secret_key";
 server.use(express.static('build'))
@@ -40,6 +42,7 @@ opts.secretOrKey = secret_key;
 server.use(passport.authenticate("session"));
 
 //middlewares
+server.use(express.static('build'));
 server.use(cors());
 server.use(express.json()); // to parse req.body
 server.use("/products", isAuth(), productsRouter.router); // we can also use jwt token
@@ -50,6 +53,10 @@ server.use("/auth", authRouter.router);
 server.use("/cart", cartRouter.router);
 server.use("/orders", orderRouter.router);
 // Set the headers to be exposed
+
+server.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "build", "index.html"));
+});
 
 //passport startagies
 
