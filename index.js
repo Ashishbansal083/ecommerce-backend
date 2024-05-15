@@ -126,8 +126,9 @@ passport.deserializeUser(function (user, cb) {
 main().catch((error) => console.log(error));
 
 async function main() {
-  await mongoose.connect("mongodb://127.0.0.1:27017/ecommerce");
-  console.log("database connected");
+  await mongoose.connect("mongodb+srv://bansalgashi083:jmhHcJomhQuW5Cyk@cluster0.ikek9mt.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0");
+
+  // console.log("database connected(jmhHcJomhQuW5Cyk)mongodb+srv://bansalgashi083:jmhHcJomhQuW5Cyk@cluster0.ikek9mt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 }
 
 server.post("/products", createProduct);
