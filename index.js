@@ -54,6 +54,8 @@ server.use("/cart", cartRouter.router);
 server.use("/orders", orderRouter.router);
 // Set the headers to be exposed
 
+
+
 server.get("*", (req, res) => {
   res.sendFile(path.resolve(__dirname, "build", "index.html"));
 });
@@ -81,7 +83,7 @@ passport.use(
         "sha256",
         async function (err, hashedPassword) {
           if (!crypto.timingSafeEqual(user.password, hashedPassword)) {
-            return done(null, false,{ massage: "invailid cradantial" });
+            return done(null, false,{ message: "invailid cradantial" });
           }
           const token = jwt.sign(sanitizeUser(user), secret_key);
           done(null, { id: user.id, role: user.role, token });
@@ -127,6 +129,7 @@ main().catch((error) => console.log(error));
 
 async function main() {
   await mongoose.connect("mongodb+srv://bansalgashi083:jmhHcJomhQuW5Cyk@cluster0.ikek9mt.mongodb.net/ecommerce?retryWrites=true&w=majority&appName=Cluster0");
+  // await mongoose.connect("mongodb://localhost:27017/ecommerce")
 
   // console.log("database connected(jmhHcJomhQuW5Cyk)mongodb+srv://bansalgashi083:jmhHcJomhQuW5Cyk@cluster0.ikek9mt.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0");
 }

@@ -13,6 +13,7 @@ exports.cookieExtractor = function(req) {
   if (req && req.cookies) {
       token = req.cookies['jwt'];
   }
+  console.log("Extracted token:", token);
   return token;
 };
 // ...

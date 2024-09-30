@@ -13,6 +13,7 @@ exports.addToCart = async (req, res) => {
 };
 
 exports.fetchCartByUser = async (req, res) => {
+  console.log('ashish',req.body)  
   const { id } = req.user;
 
   try {

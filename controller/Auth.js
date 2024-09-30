@@ -52,7 +52,6 @@ exports.loginUser = async (req, res) => {
 exports.checkUser = async (req, res) => {
   if (req.user) {
     res.json(req.user);
-    console.log(req.user);
   } else {
     res.sendStatus(401);
     
