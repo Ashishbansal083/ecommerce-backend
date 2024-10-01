@@ -42,22 +42,22 @@ opts.secretOrKey = secret_key;
 server.use(passport.authenticate("session"));
 
 //middlewares
-server.use(express.static('build'));
+server.use(express.static(path.resolve(__dirname, 'build')));
 server.use(cors());
 server.use(express.json()); // to parse req.body
 server.use("/products", isAuth(), productsRouter.router); // we can also use jwt token
-server.use("/brands", brandsRouter.router);
-server.use("/categories", categoriesRouter.router);
-server.use("/users", userRouter.router);
+server.use("/brands",isAuth(), brandsRouter.router);
+server.use("/categories",isAuth(), categoriesRouter.router);
+server.use("/users",isAuth(), userRouter.router);
 server.use("/auth", authRouter.router);
-server.use("/cart", cartRouter.router);
-server.use("/orders", orderRouter.router);
+server.use("/cart",isAuth(), cartRouter.router);
+server.use("/orders",isAuth(), orderRouter.router);
 // Set the headers to be exposed
 
 
 
 server.get("*", (req, res) => {
-  res.sendFile(path.resolve(__dirname, "build", "index.html"));
+  res.sendFile(path.resolve("build", "index.html"));
 });
 
 //passport startagies
